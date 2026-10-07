@@ -219,8 +219,8 @@ window.PEHUEMO_LUGARES = [
     id: "peninsula-de-los-coihues", nombre: "Península de los Coihues", tipo: "Paseos", loc: "pehuenia",
     img: "assets/img/araucaria-lago.webp", coords: [-38.895, -71.165],
     texto: "Un paseo de 3,5 km que se adentra en el lago Aluminé, con playas, lagunas y bosque de coihues y ñires.",
-    detalle: "La península se extiende 3,5 km desde el centro comercial de Villa Pehuenia hacia el lago. Se recorre a pie o en bicicleta durante todo el año, con paradas en distintas playas, como Radal Có, y en el Mirador del Ciprés. En otoño se tiñe de ocres y rojos; en invierno, de nieve.",
-    datos: [["Largo", "3,5 km"], ["Cómo", "A pie o en bici"], ["Temporada", "Todo el año"]]
+    detalle: "La península se extiende 3,5 km desde el centro comercial de Villa Pehuenia hacia el lago. Se recorre a pie o en bicicleta, con paradas en distintas playas, como Radal Có, y en el Mirador del Ciprés. En verano es ideal para un día de playa; en invierno se cubre de nieve.",
+    datos: [["Largo", "3,5 km"], ["Cómo", "A pie o en bici"], ["Temporada", "Verano e invierno"]]
   },
   {
     id: "mirador-del-cipres", nombre: "Mirador del Ciprés", tipo: "Miradores", loc: "pehuenia",
@@ -241,7 +241,7 @@ window.PEHUEMO_LUGARES = [
     img: "assets/img/playa-moquehue.webp", coords: [-38.891, -71.1851],
     texto: "Reserva natural urbana a 500 m del centro, para caminar, tomar mate y ver aves.",
     detalle: "Es una reserva natural urbana creada por ordenanza municipal en 2010, de casi 35 hectáreas. Tiene sendero costero y mirador. Se ven macás, biguás y coipos. Su nombre en mapudungun se refiere al pato que habita la laguna (pollol) y a \"lafquen\", lago o laguna.",
-    datos: [["Desde el centro", "500 m"], ["Superficie", "34,8 ha"], ["Temporada", "Todo el año"]]
+    datos: [["Desde el centro", "500 m"], ["Superficie", "34,8 ha"], ["Temporada", "Verano e invierno"]]
   },
   {
     id: "la-angostura", nombre: "Puente y playa La Angostura", tipo: "Lagos y playas", loc: "pehuenia",
@@ -276,7 +276,7 @@ window.PEHUEMO_LUGARES = [
     img: "assets/img/araucaria-lago.webp", coords: [-38.79, -71.17],
     texto: "Un paseo de 50 km entre araucarias milenarias, lagunas y mallines hasta el límite con Chile.",
     detalle: "Se accede por RP 13 recorriendo 12 km al norte del centro cívico. El camino sube desde unos 1.400 m entre bosques de araucarias antiguas, puestos de veranada, lagunas detrás del Batea Mahuida y mallines, con vistas a Villa Pehuenia, Moquehue y los volcanes de Chile. Termina en un puesto de Gendarmería en el hito fronterizo, el punto más alto.",
-    datos: [["Recorrido", "50 km en total"], ["Inicio", "12 km al norte"], ["Mejor época", "Primavera y verano"]]
+    datos: [["Recorrido", "50 km en total"], ["Inicio", "12 km al norte"], ["Mejor época", "Verano"]]
   },
   {
     id: "paso-icalma", nombre: "Paso Icalma", tipo: "Circuitos", loc: "pehuenia",
@@ -346,8 +346,6 @@ window.PEHUEMO_INFO = {
   ],
   temporadas: [
     ["Verano", "Lagos templados, playas de arena, kayak, navegación, trekking y la Fiesta Provincial del Lago y las Araucarias en enero, por el aniversario de la villa."],
-    ["Otoño", "La época más cambiante: el bosque se tiñe de ocres, rojos y dorados. Ideal para recorrer tranquilo y fotografiar."],
-    ["Invierno", "Nieve entre bosques de pehuenes. Parque de nieve Batea Mahuida con esquí, snowboard, raquetas y motos de nieve. Cadenas obligatorias en la ruta."],
-    ["Primavera", "Vuelven las flores y las aves, y bajan los arroyos de deshielo. Buena época para el Paso del Arco."]
+    ["Invierno", "Nieve entre bosques de pehuenes. Parque de nieve Batea Mahuida con esquí, snowboard, raquetas y motos de nieve. Cadenas obligatorias en la ruta."]
   ]
 };
