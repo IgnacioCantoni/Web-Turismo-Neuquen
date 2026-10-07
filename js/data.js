@@ -13,7 +13,7 @@ window.PEHUEMO_CONFIG = {
   // Número de WhatsApp central de PEHUEMO, en formato internacional sin "+" ni espacios.
   // Ejemplo: "5492942000000". Mientras esté vacío, los formularios muestran
   // el mensaje armado para copiarlo.
-  whatsapp: "",
+  whatsapp: "5492942647468",
   email: "",
   instagram: "",
   // Dominio final del sitio (para Google). Ejemplo: "https://pehuemo.com.ar"
