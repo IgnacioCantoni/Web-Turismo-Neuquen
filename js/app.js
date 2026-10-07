@@ -13,6 +13,9 @@
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const tipoSingular = { Cabañas: "Cabañas", Campings: "Camping", Restaurantes: "Restaurante", Supermercados: "Supermercado" };
+  const HEART_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.7 7.9 3.8 4.5 7.2 4.5c2 0 3.5 1.1 4.8 2.8 1.3-1.7 2.8-2.8 4.8-2.8 3.4 0 5.5 3.4 4.4 6.6-1.7 4.8-9.2 9.4-9.2 9.4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+  const HEART_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.7 7.9 3.8 4.5 7.2 4.5c2 0 3.5 1.1 4.8 2.8 1.3-1.7 2.8-2.8 4.8-2.8 3.4 0 5.5 3.4 4.4 6.6-1.7 4.8-9.2 9.4-9.2 9.4z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+  const heart = (on) => (on ? HEART_ON : HEART_OFF);
   const tipoLabel = (p) => tipoSingular[p.tipo] || p.tipo;
 
   // ---------- Favoritos (Mi viaje) ----------
@@ -21,7 +24,7 @@
   try { favs = JSON.parse(localStorage.getItem(FAV_KEY) || "[]").filter((id) => byId[id]); } catch (e) { favs = []; }
   const saveFavs = () => {
     try { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch (e) { /* sin almacenamiento */ }
-    $("#trip-count").textContent = favs.length;
+    const c = $("#trip-count"); c.textContent = favs.length; c.toggleAttribute("data-zero", favs.length === 0);
   };
   const isFav = (id) => favs.includes(id);
   const toggleFav = (id) => {
@@ -34,7 +37,7 @@
     const on = isFav(id);
     btn.setAttribute("aria-pressed", on);
     btn.setAttribute("aria-label", on ? "Quitar de Mi viaje" : "Guardar en Mi viaje");
-    btn.textContent = on ? "♥" : "♡";
+    btn.innerHTML = heart(on);
   };
   document.addEventListener("click", (e) => {
     const b = e.target.closest(".fav");
@@ -48,7 +51,7 @@
         <img src="${p.img}" alt="" loading="lazy">
         <span class="card__tag">${esc(tipoLabel(p))}</span>
       </div>
-      <button class="fav" type="button" data-id="${p.id}" aria-pressed="${isFav(p.id)}" aria-label="${isFav(p.id) ? "Quitar de" : "Guardar en"} Mi viaje">${isFav(p.id) ? "♥" : "♡"}</button>
+      <button class="fav" type="button" data-id="${p.id}" aria-pressed="${isFav(p.id)}" aria-label="${isFav(p.id) ? "Quitar de" : "Guardar en"} Mi viaje">${heart(isFav(p.id))}</button>
       <h3><a href="#p-${p.id}">${esc(p.nombre)}</a></h3>
       <p class="card__loc">${LOCS[p.loc].nombre}</p>
     </article>`;
@@ -210,7 +213,7 @@
         <div class="ficha__main">
           <div class="ficha__img">
             <img src="${p.img}" alt="Paisaje de ${LOCS[p.loc].nombre}">
-            <button class="fav" type="button" data-id="${p.id}" aria-pressed="${isFav(p.id)}">${isFav(p.id) ? "♥" : "♡"}</button>
+            <button class="fav" type="button" data-id="${p.id}" aria-pressed="${isFav(p.id)}" aria-label="${isFav(p.id) ? "Quitar de" : "Guardar en"} Mi viaje">${heart(isFav(p.id))}</button>
           </div>
           <div class="ficha__meta">
             <span class="pill">${esc(tipoLabel(p))}</span>
@@ -302,7 +305,7 @@
       <li class="plan__item">
         <span class="plan__kind">${kind}</span>
         <span class="plan__name"><a href="#p-${p.id}">${esc(p.nombre)}</a><small>${esc(tipoLabel(p))} · ${LOCS[p.loc].nombre}</small></span>
-        <button class="fav" type="button" data-id="${p.id}" aria-pressed="${isFav(p.id)}" style="position:static">${isFav(p.id) ? "♥" : "♡"}</button>
+        <button class="fav" type="button" data-id="${p.id}" aria-pressed="${isFav(p.id)}" style="position:static">${heart(isFav(p.id))}</button>
       </li>`;
     const plan = $("#plan");
     plan.hidden = false;
@@ -314,7 +317,7 @@
         </div>
         <div class="plan__actions">
           <button class="btn btn--sm btn--ghost" type="button" id="plan-again">Otra propuesta</button>
-          <button class="btn btn--sm" type="button" id="plan-save">Guardar todo en Mi viaje</button>
+          <button class="btn btn--sm" type="button" id="plan-save">Guardar en Mi viaje</button>
         </div>
       </div>
       <ul class="plan__list">

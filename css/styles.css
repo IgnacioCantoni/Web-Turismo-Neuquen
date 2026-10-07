@@ -334,3 +334,66 @@ p { margin: 0; }
 
 .view { animation: fade .35s ease both; }
 @keyframes fade { from { opacity: .4; } to { opacity: 1; } }
+
+/* ---------- Ajustes de alineación de botones y controles ---------- */
+.btn { min-height: 48px; padding-block: 0; white-space: nowrap; }
+.btn--sm { min-height: 40px; }
+.field input, .field select { height: 48px; padding-block: 0; }
+.field select {
+  appearance: none; -webkit-appearance: none; padding-right: 2.4rem; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px; background-repeat: no-repeat;
+}
+.field textarea { padding-block: .7rem; }
+.chip span { text-align: center; }
+.fav { padding: 0; }
+.fav svg { width: 20px; height: 20px; display: block; }
+.badge[data-zero] { display: none; }
+
+/* Buscador: grupos y botón en una sola fila en escritorio */
+.search { max-width: 1040px; display: grid; grid-template-columns: auto auto 1fr; align-items: end; }
+.search__go { justify-self: end; margin-left: 0; }
+@media (max-width: 900px) {
+  .search { grid-template-columns: 1fr; }
+  .search__go { justify-self: stretch; width: 100%; }
+}
+@media (max-width: 640px) {
+  .search .chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .search .chip span { display: block; padding-inline: .3rem; font-size: .86rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* Planificador */
+.planner__row .btn { flex: 0 0 auto; }
+.plan__item { grid-template-columns: 9.5rem 1fr auto; }
+.plan__kind { line-height: 1.4; }
+@media (max-width: 640px) {
+  .planner__row { display: grid; grid-template-columns: 1fr 1fr; }
+  .planner__row .field { min-width: 0; }
+  .planner__row .btn { grid-column: 1 / -1; width: 100%; }
+  .plan__actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .plan__actions .btn { width: 100%; padding-inline: .6rem; white-space: normal; text-align: center; line-height: 1.2; }
+  .plan__item { grid-template-columns: 1fr auto; }
+}
+
+/* Tarjetas de localidad: botones del mismo ancho */
+.town__links .btn { flex: 1 1 0; }
+@media (max-width: 420px) {
+  .town__data { grid-template-columns: 1fr; gap: .45rem; }
+  .town__data div { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+  .town__data dd { margin: 0; text-align: right; }
+}
+
+/* Filtros en celular: cada fila de chips se desliza en horizontal */
+@media (max-width: 860px) {
+  .filters { gap: 1rem; }
+  .filters .chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: .3rem; scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); }
+  .filters .chips::-webkit-scrollbar { display: none; }
+  .filters .chip { flex: 0 0 auto; }
+}
+
+/* CTA prestadores y acciones de Mi viaje en celular */
+@media (max-width: 640px) {
+  .join .btn, .trip__actions .btn, .form .btn { width: 100%; }
+}
+.form .btn--sm { width: auto; }
