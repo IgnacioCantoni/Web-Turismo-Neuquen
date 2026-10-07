@@ -2,19 +2,20 @@
 <html lang="es" data-paginas="1">
 <head>
 <meta charset="utf-8">
+<base href="../">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Villa Pehuenia y Moquehue: alojamientos, actividades y restaurantes | PEHUEMO</title>
-<meta name="description" content="Cabañas, campings, restaurantes, kayak, cabalgatas, canopy y lugares para visitar en Villa Pehuenia y Moquehue, Neuquén. Consultá disponibilidad y reservá directo con cada prestador.">
+<title>Volcán Batea Mahuida, Villa Pehuenia: cómo llegar y qué hacer | PEHUEMO</title>
+<meta name="description" content="Volcán de 2.000 m con laguna en el cráter. En invierno, parque de nieve de la Comunidad Mapuche Puel. Está a mitad de camino entre Villa Pehuenia y Moquehue. Se sube varios kilómetros en vehículo hasta la base del parque de nieve, que en invierno ofrece esquí, snowboard y caminatas con raquetas. En ">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_AR">
 <meta property="og:site_name" content="PEHUEMO">
-<meta property="og:title" content="Villa Pehuenia y Moquehue | PEHUEMO">
-<meta property="og:description" content="Alojamientos, experiencias, gastronomía y lugares para visitar en Pehuenia y Moquehue, en un solo lugar.">
-<meta property="og:image" content="assets/img/lago-moquehue.webp">
+<meta property="og:title" content="Volcán Batea Mahuida, Villa Pehuenia: cómo llegar y qué hacer | PEHUEMO">
+<meta property="og:description" content="Volcán de 2.000 m con laguna en el cráter. En invierno, parque de nieve de la Comunidad Mapuche Puel. Está a mitad de camino entre Villa Pehuenia y Moquehue. Se sube varios kilómetros en vehículo hasta la base del parque de nieve, que en invierno ofrece esquí, snowboard y caminatas con raquetas. En ">
+<meta property="og:image" content="assets/img/volcan-batea-mahuida.webp">
 <meta name="twitter:card" content="summary_large_image">
-<!--SEO-->
+
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"TouristDestination","name":"Villa Pehuenia y Moquehue","description":"Aldeas de montaña en la cordillera de Neuquén, Argentina, a orillas de los lagos Aluminé y Moquehue, entre bosques de araucarias.","geo":{"@type":"GeoCoordinates","latitude":-38.8797,"longitude":-71.1872},"containedInPlace":{"@type":"AdministrativeArea","name":"Neuquén, Argentina"},"touristType":["Naturaleza","Aventura","Familias","Pesca","Trekking","Gastronomía"]}
+{"@context":"https://schema.org","@type":"TouristAttraction","name":"Volcán Batea Mahuida","description":"Volcán de 2.000 m con laguna en el cráter. En invierno, parque de nieve de la Comunidad Mapuche Puel.","geo":{"@type":"GeoCoordinates","latitude":-38.94,"longitude":-71.24},"containedInPlace":{"@type":"Place","name":"Villa Pehuenia, Neuquén, Argentina"}}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +23,7 @@
 <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body data-route="l-volcan-batea-mahuida">
 
 <header class="topbar">
   <div class="wrap topbar__in">
@@ -43,7 +44,7 @@
 <main id="app">
 
   <!-- ============ INICIO ============ -->
-  <section class="view" data-view="inicio">
+  <section class="view" data-view="inicio" hidden>
 
     <div class="hero">
       <img class="hero__img" src="assets/img/lago-moquehue.webp" alt="Lago Moquehue con una isla boscosa y montañas nevadas de fondo">
@@ -240,8 +241,11 @@
   </section>
 
   <!-- ============ LUGAR ============ -->
-  <section class="view wrap block" data-view="lugar" hidden>
-    <div id="lugar"></div>
+  <section class="view wrap block" data-view="lugar">
+    <div id="lugar">
+    <h1>Volcán Batea Mahuida</h1>
+    <p>Volcán de 2.000 m con laguna en el cráter. En invierno, parque de nieve de la Comunidad Mapuche Puel.</p>
+    <p>Está a mitad de camino entre Villa Pehuenia y Moquehue. Se sube varios kilómetros en vehículo hasta la base del parque de nieve, que en invierno ofrece esquí, snowboard y caminatas con raquetas. En verano se puede caminar hasta la laguna del cráter y la cumbre, una caminata exigente. El acceso lo administra la Comunidad Mapuche Puel, que cobra la entrada y entrega mapas.</p></div>
   </section>
 
   <!-- ============ MI VIAJE ============ -->

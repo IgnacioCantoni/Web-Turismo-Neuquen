@@ -8,11 +8,28 @@
   const PLACES = window.PEHUEMO_LUGARES;
   const TRIPS = window.PEHUEMO_VIAJES;
   const byId = Object.fromEntries(ITEMS.map((p) => [p.id, p]));
+  const placeById = Object.fromEntries(PLACES.map((l) => [l.id, l]));
+
+  // Con páginas generadas (scripts/generar-paginas.mjs) los enlaces van a URLs reales,
+  // que Google puede indexar. Sin ellas, se navega con #.
+  const PAGES = document.documentElement.dataset.paginas === "1";
+  const linkP = (p) => (PAGES ? `prestadores/${p.id}.html` : `#p-${p.id}`);
+  const linkL = (l) => (PAGES ? `lugares/${l.id}.html` : `#l-${l.id}`);
+
+  // Distancia aproximada en km entre dos coordenadas.
+  const km = (a, b) => {
+    if (!a || !b) return null;
+    const R = 6371, r = Math.PI / 180;
+    const dLat = (b[0] - a[0]) * r, dLon = (b[1] - a[1]) * r;
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  };
+  const fmtKm = (d) => (d == null ? "" : d < 1 ? "a menos de 1 km" : `a ≈ ${Math.round(d)} km`);
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const tipoSingular = { Cabañas: "Cabañas", Campings: "Camping", Restaurantes: "Restaurante", Supermercados: "Supermercado" };
+  const tipoSingular = { Cabañas: "Cabañas", Campings: "Camping", Restaurantes: "Restaurante", Cafeterías: "Cafetería", Cervecerías: "Cervecería", Supermercados: "Supermercado" };
   const HEART_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.7 7.9 3.8 4.5 7.2 4.5c2 0 3.5 1.1 4.8 2.8 1.3-1.7 2.8-2.8 4.8-2.8 3.4 0 5.5 3.4 4.4 6.6-1.7 4.8-9.2 9.4-9.2 9.4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
   const HEART_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.7 7.9 3.8 4.5 7.2 4.5c2 0 3.5 1.1 4.8 2.8 1.3-1.7 2.8-2.8 4.8-2.8 3.4 0 5.5 3.4 4.4 6.6-1.7 4.8-9.2 9.4-9.2 9.4z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
   const heart = (on) => (on ? HEART_ON : HEART_OFF);
@@ -52,7 +69,7 @@
         <span class="card__tag">${esc(tipoLabel(p))}</span>
       </div>
       <button class="fav" type="button" data-id="${p.id}" aria-pressed="${isFav(p.id)}" aria-label="${isFav(p.id) ? "Quitar de" : "Guardar en"} Mi viaje">${heart(isFav(p.id))}</button>
-      <h3><a href="#p-${p.id}">${esc(p.nombre)}</a></h3>
+      <h3><a href="${linkP(p)}">${esc(p.nombre)}</a></h3>
       <p class="card__loc">${LOCS[p.loc].nombre}</p>
     </article>`;
 
@@ -82,16 +99,28 @@
         </div>
       </article>`).join("");
 
-    $("#places").innerHTML = PLACES.map((pl) => `
-      <article class="place">
-        <img src="${pl.img}" alt="${pl.nombre}" loading="lazy">
-        <span class="place__loc">${LOCS[pl.loc].nombre}</span>
-        <h3>${pl.nombre}</h3>
-        <p>${pl.texto}</p>
-      </article>`).join("");
+    const tipos = [...new Set(PLACES.map((pl) => pl.tipo))];
+    $("#places-filter").innerHTML = ["Todos"].concat(tipos).map((t, i) => `
+      <label class="chip"><input type="radio" name="pl-tipo" id="pl-tipo-${i}" value="${i ? esc(t) : ""}" ${i ? "" : "checked"}><span>${esc(t)}</span></label>`).join("");
+    $("#places-filter").addEventListener("change", (e) => renderPlaces(e.target.value));
+    renderPlaces("");
 
     $("#planner-types").innerHTML = Object.entries(TRIPS).map(([key, t], i) => `
       <label class="chip"><input type="radio" name="trip" id="trip-${key}" value="${key}" ${i === 0 ? "checked" : ""}><span>${t.nombre}</span></label>`).join("");
+  }
+
+  function placeCard(pl, from) {
+    const d = from ? km(from, pl.coords) : null;
+    return `
+      <article class="place">
+        <img src="${pl.img}" alt="${esc(pl.nombre)}" loading="lazy">
+        <span class="place__loc">${esc(pl.tipo)} · ${LOCS[pl.loc].nombre}${d != null ? " · " + fmtKm(d) : ""}</span>
+        <h3><a href="${linkL(pl)}">${esc(pl.nombre)}</a></h3>
+        <p>${esc(pl.texto)}</p>
+      </article>`;
+  }
+  function renderPlaces(tipo) {
+    $("#places").innerHTML = PLACES.filter((pl) => !tipo || pl.tipo === tipo).map((pl) => placeCard(pl)).join("");
   }
 
   // ---------- Mapa ----------
@@ -111,8 +140,9 @@
       L.marker(l.coords, { icon: icon("pin--town") }).addTo(map)
         .bindPopup(`<strong>${l.nombre}</strong><br><a href="#explorar-alojamiento-${key}">Ver alojamientos</a>`);
     });
-    PLACES.forEach((pl) => {
-      L.marker(pl.coords, { icon: icon("pin--place") }).addTo(map).bindPopup(`<strong>${pl.nombre}</strong><br>${pl.texto}`);
+    PLACES.filter((pl) => pl.coords).forEach((pl) => {
+      L.marker(pl.coords, { icon: icon("pin--place") }).addTo(map)
+        .bindPopup(`<strong>${esc(pl.nombre)}</strong><br>${esc(pl.texto)}<br><a href="${linkL(pl)}">Ver más</a>`);
     });
     setTimeout(() => map.invalidateSize(), 200);
   }
@@ -202,10 +232,8 @@
       box.innerHTML = `<a class="back" href="#explorar">← Volver a explorar</a><div class="empty">No encontramos ese prestador.</div>`;
       return;
     }
+    document.title = `${p.nombre} · ${tipoLabel(p)} en ${LOCS[p.loc].nombre} | PEHUEMO`;
     const verb = p.cat === "alojamiento" ? "Solicitar reserva" : p.cat === "servicios" ? "Hacer una consulta" : "Consultar disponibilidad";
-    const others = Object.keys(CATS).filter((c) => c !== p.cat && c !== "servicios");
-    const related = others.map((c) => pick(ITEMS.filter((x) => x.cat === c && x.loc === p.loc).concat(
-      ITEMS.filter((x) => x.cat === c && x.loc !== p.loc && !ITEMS.some((y) => y.cat === c && y.loc === p.loc))), hash(p.id + c))).filter(Boolean);
 
     box.innerHTML = `
       <a class="back" href="#explorar">← Volver a explorar</a>
@@ -220,8 +248,9 @@
             <span class="pill">${LOCS[p.loc].nombre}</span>
           </div>
           <h1>${esc(p.nombre)}</h1>
-          ${p.descripcion ? `<p>${esc(p.descripcion)}</p>` : `
-          <p class="notice">Estamos armando esta ficha junto a ${esc(p.nombre)}. Pronto vas a ver fotos propias, servicios, precios y ubicación. Mientras tanto, podés enviar tu consulta y te ponemos en contacto.</p>`}
+          ${p.descripcion ? `<p class="lead">${esc(p.descripcion)}</p>` : ""}
+          ${contactBlock(p)}
+          <p class="notice">Estamos completando esta ficha junto a ${esc(p.nombre)}: pronto vas a ver fotos propias, servicios, precios y ubicación exacta. Mientras tanto, podés enviar tu consulta.</p>
         </div>
         <aside class="ficha__side">
           <form class="form" id="booking-form">
@@ -235,12 +264,7 @@
           </form>
         </aside>
       </div>
-      ${related.length ? `
-      <section class="related">
-        <p class="eyebrow">Completá tu experiencia</p>
-        <h2>Cerca de ${esc(p.nombre)}</h2>
-        <div class="cards">${related.map(card).join("")}</div>
-      </section>` : ""}`;
+      ${nearby(p.loc, p.id, p.cat, hash(p.id))}`;
 
     $("#booking-form").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -258,6 +282,81 @@
       lines.push(p.cat === "alojamiento" ? "¿Tienen disponibilidad?" : "¿Me confirman disponibilidad?");
       showOut($("#booking-out"), lines.join("\n"), null, p.whatsapp || CONFIG.whatsapp);
     });
+  }
+
+  function contactBlock(p) {
+    if (!p.telefono && !p.web && !p.oficial) return "";
+    const tel = p.telefono ? p.telefono.replace(/[^0-9]/g, "") : "";
+    return `
+      <dl class="contact">
+        ${p.oficial ? `<div><dt>Rubro</dt><dd>${esc(p.oficial)}</dd></div>` : ""}
+        ${p.telefono ? `<div><dt>Teléfono</dt><dd><a href="tel:${tel}">${esc(p.telefono)}</a></dd></div>` : ""}
+        ${p.web ? `<div><dt>Web o redes</dt><dd><a href="${esc(p.web)}" target="_blank" rel="noopener">${esc(p.web.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""))}</a></dd></div>` : ""}
+      </dl>
+      <p class="source">Datos de contacto según la guía de la Municipalidad de Villa Pehuenia-Moquehue.</p>`;
+  }
+
+  // "Qué tenés cerca": lugares ordenados por distancia y otros prestadores de la zona.
+  function nearby(loc, excludeId, cat, seed) {
+    const center = LOCS[loc].coords;
+    const places = PLACES.filter((pl) => pl.coords && pl.id !== excludeId)
+      .map((pl) => [pl, km(center, pl.coords)])
+      .sort((a, b) => a[1] - b[1]).slice(0, 4);
+    const groups = [
+      ["experiencia", "Qué hacer"], ["gastronomia", "Dónde comer"], ["alojamiento", "Dónde dormir"], ["servicios", "Dónde comprar"]
+    ].filter(([c]) => c !== cat).map(([c, title]) => {
+      const here = ITEMS.filter((x) => x.cat === c && x.loc === loc);
+      const list = here.length ? here : ITEMS.filter((x) => x.cat === c);
+      let picks = [0, 1, 2, 3, 4, 5].map((i) => pick(list, seed + i * 7)).filter((x, i, a) => x && a.indexOf(x) === i).slice(0, 4);
+      if (picks.length > 1) picks = picks.slice(0, picks.length - (picks.length % 2)); // filas parejas
+      return picks.length ? [title, picks] : null;
+    }).filter(Boolean);
+    return `
+      <section class="related">
+        <p class="eyebrow">Qué tenés cerca</p>
+        <h2>Completá tu viaje en ${LOCS[loc].nombre}</h2>
+        <h3 class="related__sub">Lugares para visitar</h3>
+        <div class="places places--light">${places.map(([pl]) => placeCard(pl, center)).join("")}</div>
+        ${groups.map(([title, list]) => `
+          <h3 class="related__sub">${title}</h3>
+          <div class="cards">${list.map(card).join("")}</div>`).join("")}
+        <p class="source">Distancias aproximadas en línea recta desde el centro de ${LOCS[loc].nombre}.</p>
+      </section>`;
+  }
+
+  // ---------- Lugar ----------
+  function renderLugar(id) {
+    const pl = placeById[id];
+    const box = $("#lugar");
+    if (!pl) {
+      box.innerHTML = `<a class="back" href="#lugares">← Volver a lugares</a><div class="empty">No encontramos ese lugar.</div>`;
+      return;
+    }
+    document.title = `${pl.nombre}, ${LOCS[pl.loc].nombre}: cómo llegar y qué hacer | PEHUEMO`;
+    const mapsQuery = encodeURIComponent(`${pl.nombre}, ${LOCS[pl.loc].nombre}, Neuquén`);
+    box.innerHTML = `
+      <a class="back" href="#lugares">← Volver a lugares</a>
+      <div class="ficha">
+        <div class="ficha__main">
+          <div class="ficha__img"><img src="${pl.img}" alt="${esc(pl.nombre)}"></div>
+          <div class="ficha__meta">
+            <span class="pill">${esc(pl.tipo)}</span>
+            <span class="pill">${LOCS[pl.loc].nombre}</span>
+          </div>
+          <h1>${esc(pl.nombre)}</h1>
+          <p class="lead">${esc(pl.texto)}</p>
+          <p>${esc(pl.detalle)}</p>
+        </div>
+        <aside class="ficha__side">
+          <div class="form">
+            <h2>Datos útiles</h2>
+            <dl class="contact">${pl.datos.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+            <a class="btn" href="https://www.google.com/maps/search/?api=1&query=${mapsQuery}" target="_blank" rel="noopener">Cómo llegar</a>
+            <p class="source">Información de la guía de sitios de interés de la Municipalidad de Villa Pehuenia-Moquehue.</p>
+          </div>
+        </aside>
+      </div>
+      ${nearby(pl.loc, pl.id, "", hash(pl.id))}`;
   }
 
   function showOut(box, text, error, number) {
@@ -296,15 +395,16 @@
 
     const stay = pick(inLoc("alojamiento", t.alojamiento || "Cabañas"), seed);
     const exps = t.exp.map((tipo, i) => pick(inLoc("experiencia", tipo).length ? inLoc("experiencia", tipo) : anyLoc("experiencia", tipo), seed + i)).filter(Boolean);
-    const restos = inLoc("gastronomia");
+    const restos = inLoc("gastronomia", "Restaurantes");
     const food = Array.from({ length: t.restos || 1 }, (_, i) => pick(restos, seed + i * 3)).filter((x, i, a) => x && a.indexOf(x) === i);
-    const places = PLACES.filter((pl) => t.lugares.includes(pl.nombre));
+    if (t.cerveceria) { const c = pick(anyLoc("gastronomia", "Cervecerías"), seed); if (c) food.push(c); }
+    const places = t.lugares.map((id) => placeById[id]).filter(Boolean);
     const chosen = [stay].concat(exps, food).filter(Boolean);
 
     const row = (kind, p) => `
       <li class="plan__item">
         <span class="plan__kind">${kind}</span>
-        <span class="plan__name"><a href="#p-${p.id}">${esc(p.nombre)}</a><small>${esc(tipoLabel(p))} · ${LOCS[p.loc].nombre}</small></span>
+        <span class="plan__name"><a href="${linkP(p)}">${esc(p.nombre)}</a><small>${esc(tipoLabel(p))} · ${LOCS[p.loc].nombre}</small></span>
         <button class="fav" type="button" data-id="${p.id}" aria-pressed="${isFav(p.id)}" style="position:static">${heart(isFav(p.id))}</button>
       </li>`;
     const plan = $("#plan");
@@ -327,7 +427,7 @@
         ${places.map((pl) => `
           <li class="plan__item">
             <span class="plan__kind">Visitar</span>
-            <span class="plan__name">${pl.nombre}<small>${LOCS[pl.loc].nombre}</small></span>
+            <span class="plan__name"><a href="${linkL(pl)}">${esc(pl.nombre)}</a><small>${esc(pl.tipo)} · ${LOCS[pl.loc].nombre}</small></span>
             <span></span>
           </li>`).join("")}
       </ul>
@@ -392,7 +492,7 @@
   }
 
   function route() {
-    const h = decodeURIComponent(location.hash.slice(1)) || "inicio";
+    const h = decodeURIComponent(location.hash.slice(1)) || document.body.dataset.route || "inicio";
     $("#nav").classList.remove("is-open");
     $("#menu-btn").setAttribute("aria-expanded", "false");
 
@@ -408,6 +508,10 @@
     } else if (h.startsWith("p-")) {
       show("ficha");
       renderFicha(h.slice(2));
+      window.scrollTo(0, 0);
+    } else if (h.startsWith("l-")) {
+      show("lugar");
+      renderLugar(h.slice(2));
       window.scrollTo(0, 0);
     } else if (h === "mi-viaje") {
       show("mi-viaje"); renderTrip(); window.scrollTo(0, 0);
