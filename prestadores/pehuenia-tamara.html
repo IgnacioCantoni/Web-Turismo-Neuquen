@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="es" data-paginas="1">
+<head>
+<meta charset="utf-8">
+<base href="../">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tamara · Cabañas en Villa Pehuenia | PEHUEMO</title>
+<meta name="description" content="Tamara, cabañas en Villa Pehuenia, Neuquén. Cabañas en Villa Pehuenia, sobre el lago Aluminé. Cerca del centro, de la Península de los Coihues y sus playas, y a pocos kilómetros de La Angostura y del volcán Batea Mahuida.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="PEHUEMO">
+<meta property="og:title" content="Tamara · Cabañas en Villa Pehuenia | PEHUEMO">
+<meta property="og:description" content="Tamara, cabañas en Villa Pehuenia, Neuquén. Cabañas en Villa Pehuenia, sobre el lago Aluminé. Cerca del centro, de la Península de los Coihues y sus playas, y a pocos kilómetros de La Angostura y del volcán Batea Mahuida.">
+<meta property="og:image" content="assets/img/lago-alumine.webp">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"LodgingBusiness","name":"Tamara","description":"Cabañas en Villa Pehuenia, sobre el lago Aluminé. Cerca del centro, de la Península de los Coihues y sus playas, y a pocos kilómetros de La Angostura y del volcán Batea Mahuida.","address":{"@type":"PostalAddress","addressLocality":"Villa Pehuenia","addressRegion":"Neuquén","addressCountry":"AR"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-route="p-pehuenia-tamara">
+
+<header class="topbar">
+  <div class="wrap topbar__in">
+    <a class="logo" href="#inicio" aria-label="PEHUEMO, inicio">
+      <span class="logo__a">PEHUE</span><span class="logo__b">MO</span>
+    </a>
+    <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav">Menú</button>
+    <nav class="nav" id="nav">
+      <a href="#explorar">Explorar</a>
+      <a href="#arma-tu-viaje">Armá tu viaje</a>
+      <a href="#lugares">Lugares</a>
+      <a href="#mi-viaje" class="nav__trip">Mi viaje <span class="badge" id="trip-count">0</span></a>
+      <a href="#sumate" class="nav__cta">Sumá tu emprendimiento</a>
+    </nav>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- ============ INICIO ============ -->
+  <section class="view" data-view="inicio" hidden>
+
+    <div class="hero">
+      <img class="hero__img" src="assets/img/lago-moquehue.webp" alt="Lago Moquehue con una isla boscosa y montañas nevadas de fondo">
+      <div class="hero__shade"></div>
+      <div class="wrap hero__in">
+        <p class="eyebrow eyebrow--light">Neuquén · Patagonia argentina</p>
+        <h1 class="hero__title">Descubrí Pehuenia<br>y Moquehue</h1>
+        <p class="hero__lead">Dónde dormir, qué hacer y dónde comer en las dos villas de la cordillera, con contacto directo con cada prestador.</p>
+
+        <form class="search" id="search-form">
+          <fieldset class="search__group">
+            <legend>¿Qué estás buscando?</legend>
+            <div class="chips" role="radiogroup">
+              <label class="chip"><input type="radio" name="s-cat" id="s-cat-aloj" value="alojamiento" checked><span>Alojamiento</span></label>
+              <label class="chip"><input type="radio" name="s-cat" id="s-cat-exp" value="experiencia"><span>Experiencia</span></label>
+              <label class="chip"><input type="radio" name="s-cat" id="s-cat-gas" value="gastronomia"><span>Gastronomía</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="search__group">
+            <legend>¿Dónde?</legend>
+            <div class="chips" role="radiogroup">
+              <label class="chip"><input type="radio" name="s-loc" id="s-loc-p" value="pehuenia"><span>Villa Pehuenia</span></label>
+              <label class="chip"><input type="radio" name="s-loc" id="s-loc-m" value="moquehue"><span>Moquehue</span></label>
+              <label class="chip"><input type="radio" name="s-loc" id="s-loc-a" value="" checked><span>Ambos</span></label>
+            </div>
+          </fieldset>
+          <button class="btn btn--sun search__go" type="submit">Buscar</button>
+        </form>
+      </div>
+    </div>
+
+    <section class="wrap block">
+      <div class="block__head">
+        <p class="eyebrow">Todo en un solo lugar</p>
+        <h2>¿Qué querés resolver?</h2>
+      </div>
+      <div class="cats" id="cats"></div>
+    </section>
+
+    <section class="block block--tint">
+      <div class="wrap">
+        <div class="block__head">
+          <p class="eyebrow">Dos villas, un mismo viaje</p>
+          <h2>Elegí tu base</h2>
+        </div>
+        <div class="towns" id="towns"></div>
+      </div>
+    </section>
+
+    <section class="wrap block" id="arma-tu-viaje">
+      <div class="block__head">
+        <p class="eyebrow">Armá tu viaje</p>
+        <h2>¿Qué tipo de viaje querés hacer?</h2>
+        <p class="block__sub">Elegí un estilo y te armamos una propuesta con alojamiento, una experiencia, dónde comer y qué visitar. Después la guardás en <a href="#mi-viaje">Mi viaje</a>.</p>
+      </div>
+      <form class="planner" id="planner">
+        <div class="chips chips--wrap" id="planner-types" role="radiogroup" aria-label="Tipo de viaje"></div>
+        <div class="planner__row">
+          <label class="field">
+            <span>Base</span>
+            <select id="planner-loc">
+              <option value="pehuenia">Villa Pehuenia</option>
+              <option value="moquehue">Moquehue</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Noches</span>
+            <input type="number" id="planner-nights" min="1" max="21" value="4">
+          </label>
+          <button class="btn" type="submit">Armar mi viaje</button>
+        </div>
+      </form>
+      <div class="plan" id="plan" hidden></div>
+    </section>
+
+    <section class="block block--deep" id="lugares">
+      <div class="wrap">
+        <div class="block__head">
+          <p class="eyebrow eyebrow--light">Lugares para visitar</p>
+          <h2>Lagos, volcanes y bosques de pehuenes</h2>
+          <p class="block__sub block__sub--light">Miradores, senderos, playas y circuitos de Villa Pehuenia y Moquehue. Tocá cada uno para ver cómo llegar y qué tenés cerca.</p>
+        </div>
+        <div class="chips chips--wrap places-filter" id="places-filter" role="radiogroup" aria-label="Tipo de lugar"></div>
+        <div class="places" id="places"></div>
+        <div class="map-wrap">
+          <div class="map" id="map" role="img" aria-label="Mapa de Villa Pehuenia, Moquehue y lugares para visitar"></div>
+          <p class="map__note">Ubicaciones aproximadas · Mapa © OpenStreetMap</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap block">
+      <div class="block__head">
+        <p class="eyebrow">Antes de viajar</p>
+        <h2>Información útil</h2>
+      </div>
+      <div class="info">
+        <article class="info__item">
+          <h3>Cómo llegar</h3>
+          <p>Desde Neuquén capital se va hasta Zapala y desde ahí hay tres caminos:</p>
+          <ul class="info__list">
+            <li><strong>RP 13 (Primeros Pinos):</strong> 120 km, 55 de ripio. El más corto.</li>
+            <li><strong>RP 23 (Pino Hachado):</strong> 155 km, 35 de ripio.</li>
+            <li><strong>RP 46 (Rahue) por Aluminé:</strong> 210 km, 50 de ripio.</li>
+          </ul>
+          <p>También hay micros desde Neuquén (Campana Dos y Albus) y desde San Martín de los Andes. Los aeropuertos más cercanos son Neuquén y Chapelco.</p>
+        </article>
+        <article class="info__item">
+          <h3>Distancias a Villa Pehuenia</h3>
+          <dl class="info__dist">
+            <div><dt>Neuquén</dt><dd>304 km</dd></div>
+            <div><dt>Zapala</dt><dd>118 km</dd></div>
+            <div><dt>San Martín de los Andes</dt><dd>208 km</dd></div>
+            <div><dt>Bariloche</dt><dd>474 km</dd></div>
+            <div><dt>Moquehue</dt><dd>23 km</dd></div>
+            <div><dt>Paso Icalma (Chile)</dt><dd>11 km</dd></div>
+          </dl>
+        </article>
+        <article class="info__item">
+          <h3>Cuándo ir</h3>
+          <ul class="info__list">
+            <li><strong>Verano:</strong> lagos a 19–21 °C, playas, kayak y trekking. En enero, la Fiesta Provincial del Lago y las Araucarias.</li>
+            <li><strong>Otoño:</strong> el bosque se tiñe de ocres y rojos.</li>
+            <li><strong>Invierno:</strong> nieve en el Batea Mahuida, esquí, raquetas y motos de nieve.</li>
+            <li><strong>Primavera:</strong> flores, aves y arroyos de deshielo.</li>
+          </ul>
+        </article>
+        <article class="info__item">
+          <h3>Antes de salir</h3>
+          <p>En invierno las cadenas son obligatorias y puede haber nieve y hielo. El Paso Icalma abre en general de 8 a 19 h y puede cerrar por clima. Consultá el estado de rutas en <a href="https://www.villapehuenia.gob.ar/" target="_blank" rel="noopener">villapehuenia.gob.ar</a> o en la Oficina de Turismo, al 02942-498044.</p>
+        </article>
+        <article class="info__item">
+          <h3>Cómo se reserva</h3>
+          <p>Elegís, completás fechas y personas, y el pedido le llega al prestador. Él confirma y coordinás el pago directamente con él. PEHUEMO no cobra al turista.</p>
+        </article>
+        <article class="info__item">
+          <h3>Cultura mapuche</h3>
+          <p>Cinco Lagunas, el Mirador de las Antenas y el parque de nieve Batea Mahuida están en territorio de la Comunidad Mapuche Puel, que cobra la entrada y entrega un mapa. Muchos nombres de la zona vienen del mapudungun.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="block block--sun">
+      <div class="wrap join">
+        <div>
+          <p class="eyebrow">Para prestadores</p>
+          <h2>¿Tenés cabañas, un resto o una actividad en la zona?</h2>
+          <p>Sumá tu emprendimiento a PEHUEMO: perfil con fotos, ubicación, WhatsApp y pedidos de reserva directos, sin comisiones en esta etapa.</p>
+        </div>
+        <a class="btn btn--dark" href="#sumate">Quiero sumarme</a>
+      </div>
+    </section>
+  </section>
+
+  <!-- ============ EXPLORAR ============ -->
+  <section class="view wrap block" data-view="explorar" hidden>
+    <div class="block__head">
+      <p class="eyebrow">Explorar</p>
+      <h2 id="explore-title">Alojamientos, experiencias y gastronomía</h2>
+    </div>
+    <div class="explore">
+      <aside class="filters" aria-label="Filtros">
+        <label class="field">
+          <span>Buscar por nombre</span>
+          <input type="search" id="f-q" placeholder="Ej.: Natura, Skal…">
+        </label>
+        <fieldset class="filters__group">
+          <legend>Categoría</legend>
+          <div class="chips chips--wrap" id="f-cat"></div>
+        </fieldset>
+        <fieldset class="filters__group">
+          <legend>Localidad</legend>
+          <div class="chips chips--wrap" id="f-loc">
+            <label class="chip"><input type="radio" name="f-loc" id="f-loc-a" value="" checked><span>Ambas</span></label>
+            <label class="chip"><input type="radio" name="f-loc" id="f-loc-p" value="pehuenia"><span>Villa Pehuenia</span></label>
+            <label class="chip"><input type="radio" name="f-loc" id="f-loc-m" value="moquehue"><span>Moquehue</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="filters__group">
+          <legend>Tipo</legend>
+          <div class="chips chips--wrap" id="f-tipo"></div>
+        </fieldset>
+      </aside>
+      <div class="results">
+        <p class="results__count" id="results-count" aria-live="polite"></p>
+        <div class="cards" id="results"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FICHA ============ -->
+  <section class="view wrap block" data-view="ficha">
+    <div id="ficha">
+    <h1>Tamara</h1>
+    <p>Cabañas en Villa Pehuenia, Neuquén.</p>
+    <p>Cabañas en Villa Pehuenia, sobre el lago Aluminé. Cerca del centro, de la Península de los Coihues y sus playas, y a pocos kilómetros de La Angostura y del volcán Batea Mahuida.</p>
+    </div>
+  </section>
+
+  <!-- ============ LUGAR ============ -->
+  <section class="view wrap block" data-view="lugar" hidden>
+    <div id="lugar"></div>
+  </section>
+
+  <!-- ============ MI VIAJE ============ -->
+  <section class="view wrap block" data-view="mi-viaje" hidden>
+    <div class="block__head">
+      <p class="eyebrow">Mi viaje</p>
+      <h2>Lo que guardaste</h2>
+      <p class="block__sub">Tocá el corazón en cualquier alojamiento, experiencia o restaurante para guardarlo acá. Se guarda en este navegador.</p>
+    </div>
+    <div id="trip"></div>
+  </section>
+
+  <!-- ============ SUMATE ============ -->
+  <section class="view wrap block" data-view="sumate" hidden>
+    <div class="join-page">
+      <div class="block__head">
+        <p class="eyebrow">Para prestadores</p>
+        <h2>Sumá tu emprendimiento a PEHUEMO</h2>
+        <p class="block__sub">La web municipal informa sobre el destino. PEHUEMO conecta al turista con vos para que concrete su viaje.</p>
+      </div>
+      <ul class="perks">
+        <li><strong>Perfil propio</strong> con fotos, descripción, servicios y ubicación en el mapa.</li>
+        <li><strong>Pedidos de reserva</strong> con fechas y cantidad de personas, que aceptás o rechazás vos.</li>
+        <li><strong>Botón de WhatsApp</strong> para que el turista te escriba directo.</li>
+        <li><strong>Recomendaciones cruzadas</strong>: quien reserva una cabaña ve actividades y restos cercanos.</li>
+        <li><strong>Sin cobros online</strong>: el pago lo coordinás directamente con el turista.</li>
+      </ul>
+      <form class="form" id="join-form">
+        <label class="field"><span>Nombre del emprendimiento</span><input id="j-name" required></label>
+        <label class="field"><span>Rubro</span>
+          <select id="j-type">
+            <option>Cabañas</option><option>Hotel / Hostería</option><option>Apart</option><option>Camping</option>
+            <option>Restaurante / Cafetería</option><option>Excursión / Guía</option><option>Actividad</option><option>Otro</option>
+          </select>
+        </label>
+        <label class="field"><span>Localidad</span>
+          <select id="j-loc"><option>Villa Pehuenia</option><option>Moquehue</option></select>
+        </label>
+        <label class="field"><span>Tu nombre</span><input id="j-contact" required></label>
+        <label class="field"><span>WhatsApp</span><input id="j-phone" inputmode="tel" required></label>
+        <button class="btn" type="submit">Enviar por WhatsApp</button>
+        <div class="form__out" id="join-out" hidden></div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__in">
+    <div>
+      <a class="logo logo--foot" href="#inicio"><span class="logo__a">PEHUE</span><span class="logo__b">MO</span></a>
+      <p>La plataforma para descubrir, organizar y reservar tu experiencia en Pehuenia y Moquehue.</p>
+    </div>
+    <p class="footer__small">PEHUEMO es un emprendimiento privado y no es la web oficial del municipio. Información oficial del destino en <a href="https://www.villapehuenia.gob.ar/" target="_blank" rel="noopener">villapehuenia.gob.ar</a>.</p>
+  </div>
+</footer>
+
+<script src="assets/vendor/leaflet/leaflet.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
